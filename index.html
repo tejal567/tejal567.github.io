@@ -1,54 +1,39 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>Tejal</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<link rel="stylesheet" href="./site_files/t.css">
-	<link rel="apple-touch-icon" sizes="57x57" href="./site_files/favicon/apple-icon-57x57.png">
-	<link rel="apple-touch-icon" sizes="60x60" href="./site_files/favicon/apple-icon-60x60.png">
-	<link rel="apple-touch-icon" sizes="72x72" href="./site_files/favicon/apple-icon-72x72.png">
-	<link rel="apple-touch-icon" sizes="76x76" href="./site_files/favicon/apple-icon-76x76.png">
-	<link rel="apple-touch-icon" sizes="114x114" href="./site_files/favicon/apple-icon-114x114.png">
-	<link rel="apple-touch-icon" sizes="120x120" href="./site_files/favicon/apple-icon-120x120.png">
-	<link rel="apple-touch-icon" sizes="144x144" href="./site_files/favicon/apple-icon-144x144.png">
-	<link rel="apple-touch-icon" sizes="152x152" href="./site_files/favicon/apple-icon-152x152.png">
-	<link rel="apple-touch-icon" sizes="180x180" href="./site_files/favicon/apple-icon-180x180.png">
-	<link rel="icon" type="image/png" sizes="192x192"  href="./site_files/favicon/android-icon-192x192.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="./site_files/favicon/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="96x96" href="./site_files/favicon/favicon-96x96.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="./site_files/favicon/favicon-16x16.png">
-	<link rel="manifest" href="./site_files/favicon/manifest.json">
-	<meta name="msapplication-TileColor" content="#ffffff">
-	<meta name="msapplication-TileImage" content="./site_files/favicon/ms-icon-144x144.png">
-	<meta name="theme-color" content="#ffffff">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Page</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-	<nav class="navbar navbar-inverse">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>                        
-				</button>
-				<a class="navbar-brand" href="https://tejal567.github.io/">Tejal Singh</a>
-			</div>
-			<div class="collapse navbar-collapse" id="myNavbar">
-				<ul class="nav navbar-nav">
-					<li class="active"><a href="https://tejal567.github.io/"><font color="D2FF19">Home</font></a></li>
-					<li><a href="https://about.me/tejal567" target="_blank">About me</a></li>
-					<li><a href="./site_files/fav_quotes.html">Favorite Quotes</a></li>
-					<li><a href="./site_files/placement_resume_iitr.pdf" target="_blank">Resume</a></li>
-				</ul>
-			</div>
-		</div>
-	</nav>
-	<div class="bg">
-		<h1>Welcome!!</h1>
-	</div>
+    <div class="container">
+        <header>
+            <h1 id="header-title"></h1>
+            <nav>
+                <a href="#" id="thoughts-link">Thoughts</a>
+                <a href="#" id="projects-link">Projects</a>
+                <a href="?page=art" id="art-link">Art</a>
+                <a href="?page=about" id="about-link">About</a>
+                <a href="?page=quotes" id="quotes-link">Quotes</a>
+            </nav>
+        </header>
+        <main id="main-content">
+            <!-- Content will be loaded here -->
+        </main>
+        <footer>
+            <div class="social-links">
+                <a href="#">Twitter</a>
+                <a href="#">GitHub</a>
+                <a href="#">Instagram</a>
+                <a href="mailto:g@shud.in">g@shud.in</a>
+            </div>
+            <div class="copyright">
+                <a href="#">CC BY-NC 4.0 2024 © Shu Ding</a>
+                <a href="#">RSS</a>
+            </div>
+        </footer>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>

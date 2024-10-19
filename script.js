@@ -6,18 +6,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('page-title').innerText = 'About';
         document.getElementById('header-title').innerText = 'About';
         document.getElementById('main-content').innerHTML = `
-            <p>Hi! I am a designer and developer residing in Berlin...</p>
-            <p>Ever since my high school years, I've devoted considerable time...</p>
-            <p>For more information about my professional journey...</p>
+            Hello! I'm Tejal, a passionate machine learning engineer dedicated to leveraging AI to solve real-world challenges. With a strong foundation in computer science and a keen interest in innovative technologies, I have been fortunate to work on diverse projects that push the boundaries of what's possible. My journey has taken me through various roles, each contributing to my growth as a professional and a problem solver.
         `;
         document.getElementById('about-link').classList.add('disabled');
-    } else if (page === 'art') {
-        document.getElementById('page-title').innerText = 'Art';
-        document.getElementById('header-title').innerText = 'Art';
-        document.getElementById('main-content').innerHTML = `
-            <p>Welcome to my Art page! Here, I document my thoughts...</p>
-        `;
-        document.getElementById('art-link').classList.add('disabled');
     } else if (page === 'quotes') {
         document.getElementById('page-title').innerText = 'Quotes';
         document.getElementById('header-title').innerText = 'Quotes';

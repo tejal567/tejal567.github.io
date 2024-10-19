@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('page-title').innerText = 'About';
         document.getElementById('header-title').innerText = 'About';
         document.getElementById('main-content').innerHTML = `
-            Hello! I'm Tejal, a passionate machine learning engineer dedicated to leveraging AI to solve real-world challenges. With a strong foundation in computer science and a keen interest in innovative technologies, I have been fortunate to work on diverse projects that push the boundaries of what's possible. My journey has taken me through various roles, each contributing to my growth as a professional and a problem solver.
+            <p>Hello! I'm Tejal, a passionate machine learning engineer dedicated to leveraging AI to solve real-world challenges. With a strong foundation in computer science and a keen interest in innovative technologies, I have been fortunate to work on diverse projects that push the boundaries of what's possible. My journey has taken me through various roles, each contributing to my growth as a professional and a problem solver.</p>
         `;
         document.getElementById('about-link').classList.add('disabled');
     } else if (page === 'quotes') {

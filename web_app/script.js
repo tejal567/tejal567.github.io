@@ -18,7 +18,7 @@ function startGame() {
   }, randomDelay);
 }
 
-function handleScreenClick() {
+function handleInteraction() {
   if (screen.classList.contains('red')) {
     // Clicked too early
     clearTimeout(timeoutId);
@@ -45,5 +45,6 @@ function handleScreenClick() {
 }
 
 // Initialize the game
-screen.addEventListener('click', handleScreenClick);
+screen.addEventListener('touchstart', handleInteraction);
+screen.addEventListener('click', handleInteraction);
 startGame();

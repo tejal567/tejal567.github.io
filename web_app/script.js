@@ -69,7 +69,7 @@ if (bestTime !== null) {
   bestTimeText.textContent = `Best time: ${bestTime.toFixed(3)} seconds`;
 }
 
-screen.textContent = "Tap to start the game.";
+screen.textContent = "Tap to start.";
 screen.className = "neutral";
 // Add a single event listener for both starting and restarting the game
 screen.addEventListener('touchstart', handleInteraction); // For mobile

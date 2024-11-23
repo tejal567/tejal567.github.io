@@ -64,6 +64,11 @@ function handleInteraction(event) {
   }
 }
 
+// Set the best time text if bestTime is not null
+if (bestTime !== null) {
+  bestTimeText.textContent = `Best time: ${bestTime.toFixed(3)} seconds`;
+}
+
 screen.textContent = "Tap to start the game.";
 screen.className = "neutral";
 // Add a single event listener for both starting and restarting the game

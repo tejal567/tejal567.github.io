@@ -38,3 +38,23 @@ body {
     font-size: 1.2rem;
     color: black;
   }
+  
+  .reset-button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    font-size: 1rem;
+    background-color: rgb(224, 100, 93);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-shadow: 1px 1px 2px white; /* Add white outline to text */
+  }
+  
+  .reset-button:hover {
+    background-color: rgb(200, 80, 80);
+  }
+  
+  .reset-button:active {
+    background-color: rgb(180, 60, 60);
+  }

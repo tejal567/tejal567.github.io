@@ -78,7 +78,7 @@ nav button[aria-current="page"]{background:var(--ink); color:var(--bg)}
 .chip{border:1px solid var(--line); background:var(--bg); border-radius:999px; padding:6px 11px; font-size:15px}
 .chip.sel{background:var(--ink); color:var(--bg); border-color:var(--ink)}
 .mins .min-input{width:68px; border:1px solid var(--line); background:var(--bg); border-radius:999px; padding:6px 12px; font-size:15px}
-.min-caption{font-size:14px; color:var(--muted)}
+.min-caption{flex-basis:100%; font-size:14px; color:var(--muted)}
 
 .field{margin-top:22px}
 .label{display:block; font-weight:700; font-size:15px; margin-bottom:8px}
@@ -265,6 +265,8 @@ function parseCSV(text) {
       row.push(f); out.push(row); row = []; f = '';
     } else f += c;
   }
+  // An unclosed quote would swallow the rest of the file into one field; refuse rather than save that back.
+  if (q) throw new Error('The data file has an unclosed quote, probably from a hand edit. Fix it on GitHub before logging, so nothing is lost.');
   if (f !== '' || row.length) { row.push(f); out.push(row); }
   return out;
 }
@@ -369,6 +371,9 @@ async function saveDay(date, dayRows) {
 }
 
 /* ---------- Today view ---------- */
+// Control characters (newlines, tabs, NUL) and Unicode line/paragraph separators become spaces, so the note
+// stays one plain-text line in every tool. Format characters such as the emoji joiner are kept.
+const oneLine = s => s.replace(/[\p{Cc}\p{Zl}\p{Zp}]+/gu, ' ').replace(/ {2,}/g, ' ');
 function blankForm() { return { done: {}, minutes: {}, energy: null, note: '' }; }
 function fillForm(rows) {
   form = blankForm();
@@ -383,7 +388,7 @@ function formRows(date) {
   const rows = [];
   for (const a of AREAS) if (form.done[a.id]) rows.push({ date, area: a.id, value: form.minutes[a.id] || '', note: '' });
   if (form.energy) rows.push({ date, area: 'energy', value: String(form.energy), note: '' });
-  const note = $('#note').value.replace(/[\r\n]+/g, ' ').trim();
+  const note = oneLine($('#note').value).trim();
   if (note) rows.push({ date, area: 'journal', value: '', note });
   return rows;
 }
@@ -414,7 +419,8 @@ function renderAreas(focusId) {
       inp.type = 'text'; inp.inputMode = 'numeric'; inp.placeholder = 'min'; inp.setAttribute('aria-label', `${a.name} minutes`);
       inp.value = form.minutes[a.id] || '';
       inp.oninput = () => { inp.value = inp.value.replace(/\D/g, '').slice(0, 4); form.minutes[a.id] = inp.value; sync(); };
-      mins.append(...chips, inp);
+      const cap = el('span', 'min-caption'); cap.textContent = 'Time is optional. Leave it empty if you didn’t track it.';
+      mins.append(...chips, inp, cap);
       sync();
       wrap.append(mins);
     }
@@ -608,6 +614,15 @@ $('#prevDay').onclick = () => openDate(addDays(current, -1));
 $('#nextDay').onclick = () => { if (current < todayStr()) openDate(addDays(current, 1)); };
 $('#saveBtn').onclick = onSave;
 $('#note').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); onSave(); } });
+// Browsers drop line breaks pasted into a one-line field, gluing words together; turn them into spaces instead.
+$('#note').addEventListener('paste', e => {
+  const t = e.clipboardData?.getData('text/plain'); if (!t) return;
+  e.preventDefault();
+  const inp = e.target, room = Math.max(0, inp.maxLength - inp.value.length + inp.selectionEnd - inp.selectionStart);
+  let s = oneLine(t).slice(0, room);
+  const last = s.charCodeAt(s.length - 1); if (last >= 0xD800 && last <= 0xDBFF) s = s.slice(0, -1); // don't split an emoji
+  inp.setRangeText(s, inp.selectionStart, inp.selectionEnd, 'end');
+});
 $('#yearSel').onchange = () => renderProgress();
 $('#refreshBtn').onclick = () => renderProgress(true);
 $('#connectBtn').onclick = onConnect;

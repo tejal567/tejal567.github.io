@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Life log">
+<meta name="theme-color" content="#EEF2EF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#101614" media="(prefers-color-scheme: dark)">
+<title>Life log</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232F7D6D'/%3E%3Crect x='7' y='7' width='5' height='5' rx='1' fill='%23fff' opacity='.45'/%3E%3Crect x='14' y='7' width='5' height='5' rx='1' fill='%23fff'/%3E%3Crect x='21' y='7' width='5' height='5' rx='1' fill='%23fff' opacity='.7'/%3E%3Crect x='7' y='14' width='5' height='5' rx='1' fill='%23fff'/%3E%3Crect x='14' y='14' width='5' height='5' rx='1' fill='%23fff' opacity='.7'/%3E%3Crect x='21' y='14' width='5' height='5' rx='1' fill='%23fff'/%3E%3Crect x='7' y='21' width='5' height='5' rx='1' fill='%23fff' opacity='.7'/%3E%3Crect x='14' y='21' width='5' height='5' rx='1' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%232F7D6D'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF2EF; --surface:#FFFFFF; --ink:#1D2A25; --muted:#5B6B64; --line:#D3DDD8;
+  --accent:#2F7D6D; --accent-ink:#FFFFFF; --brass:#A9821A; --danger:#A33A2B;
+  --h0:#DCE5E0; --h1:#A9CFC3; --h2:#6FAF9C; --h3:#2F7D6D; --h4:#164A40;
+  --cell:12px; --gap:3px;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#101614; --surface:#18211E; --ink:#E3ECE7; --muted:#93A59D; --line:#2A3732;
+    --accent:#4FB39C; --accent-ink:#0B1A16; --brass:#D9B44A; --danger:#E58A79;
+    --h0:#1E2A26; --h1:#1F4A40; --h2:#2B6E5E; --h3:#3F9A83; --h4:#74D3BA;
+    color-scheme: dark;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size:17px; line-height:1.45; -webkit-text-size-adjust:100%;
+}
+body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top,0px); background:var(--bg); z-index:10}
+button,input,select{font:inherit; color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--brass); outline-offset:2px}
+
+.wrap{max-width:560px; margin:0 auto; padding:0 18px 48px}
+.top{position:sticky; top:env(safe-area-inset-top,0px); z-index:5; background:var(--bg); border-bottom:1px solid var(--line)}
+.top .wrap{display:flex; align-items:center; justify-content:space-between; gap:12px; padding-top:12px; padding-bottom:12px}
+.top h1{margin:0; font-size:19px; font-weight:700; letter-spacing:-.01em}
+nav{display:flex; gap:4px}
+nav button{border:0; background:none; padding:7px 11px; border-radius:999px; color:var(--muted); font-weight:500; font-size:15px}
+nav button[aria-current="page"]{background:var(--ink); color:var(--bg)}
+
+/* Today */
+.datebar{display:grid; grid-template-columns:44px 1fr 44px; align-items:center; margin:22px 0 18px}
+.datebar button{width:44px; height:44px; border-radius:50%; border:1px solid var(--line); background:var(--surface); font-size:22px; line-height:1}
+.datebar button:disabled{opacity:.3; cursor:default}
+.datetxt{text-align:center}
+#dateLabel{display:block; font-size:30px; font-weight:700; letter-spacing:-.025em; line-height:1.1; font-variant-numeric:tabular-nums}
+#dateSub{display:block; color:var(--muted); font-size:15px; margin-top:2px}
+
+#areas{display:flex; flex-direction:column; gap:8px}
+.area{background:var(--surface); border:1px solid var(--line); border-radius:14px; overflow:hidden}
+.area.on{border-color:var(--accent)}
+.area-toggle{width:100%; display:grid; grid-template-columns:1fr auto; grid-template-rows:auto auto; column-gap:12px; text-align:left; border:0; background:none; padding:13px 16px}
+.area.on .area-toggle{background:var(--accent); color:var(--accent-ink)}
+.area-name{font-weight:700; font-size:18px}
+.area-hint{grid-row:2; font-size:14px; color:var(--muted)}
+.area.on .area-hint{color:inherit; opacity:.8}
+.tick{grid-row:1 / span 2; grid-column:2; align-self:center; width:26px; height:26px; border-radius:50%; border:2px solid var(--line)}
+.area.on .tick{border-color:var(--accent-ink); background:var(--accent-ink);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%232F7D6D' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size:18px; background-position:center; background-repeat:no-repeat}
+.mins{display:flex; flex-wrap:wrap; gap:6px; padding:10px 12px 12px; align-items:center}
+.chip{border:1px solid var(--line); background:var(--bg); border-radius:999px; padding:6px 11px; font-size:15px}
+.chip.sel{background:var(--ink); color:var(--bg); border-color:var(--ink)}
+.mins .min-input{width:68px; border:1px solid var(--line); background:var(--bg); border-radius:999px; padding:6px 12px; font-size:15px}
+.min-caption{font-size:14px; color:var(--muted)}
+
+.field{margin-top:22px}
+.label{display:block; font-weight:700; font-size:15px; margin-bottom:8px}
+.caption{font-size:14px; color:var(--muted); margin:6px 0 0}
+.energy{display:flex; gap:8px}
+.energy button{flex:1; height:46px; border-radius:12px; border:1px solid var(--line); background:var(--surface); font-weight:700; font-size:18px}
+.energy button[aria-pressed="true"]{background:var(--ink); color:var(--bg); border-color:var(--ink)}
+input[type=text],input[type=password],select{width:100%; border:1px solid var(--line); background:var(--surface); border-radius:12px; padding:12px 14px; font-size:16px}
+.primary{width:100%; margin-top:24px; border:0; border-radius:14px; background:var(--ink); color:var(--bg); font-weight:700; font-size:18px; padding:16px}
+.primary:disabled{opacity:.5}
+.secondary{border:1px solid var(--line); background:var(--surface); border-radius:12px; padding:11px 14px; font-weight:500}
+.status{min-height:1.5em; margin:12px 0 0; color:var(--muted); font-size:15px; text-align:center}
+.status.err{color:var(--danger)}
+.status.ok{color:var(--accent)}
+
+/* Progress */
+.prog-head{display:flex; align-items:center; justify-content:space-between; gap:12px; margin:22px 0 14px}
+.prog-head select{width:auto}
+.stats{display:grid; grid-template-columns:repeat(2,1fr); gap:8px}
+.stat{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:12px 14px}
+.stat b{display:block; font-size:28px; letter-spacing:-.02em; font-variant-numeric:tabular-nums; line-height:1.15}
+.stat span{font-size:14px; color:var(--muted)}
+.heat-box{margin-top:18px; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:14px}
+.heat-scroll{overflow-x:auto; padding-bottom:4px}
+.months{position:relative; height:16px; font-size:12px; color:var(--muted); margin-left:0}
+.months span{position:absolute; top:0}
+.heat{display:grid; grid-template-rows:repeat(7,var(--cell)); grid-auto-flow:column; grid-auto-columns:var(--cell); gap:var(--gap); width:max-content}
+.heat .c{width:var(--cell); height:var(--cell); border-radius:3px; border:0; padding:0; background:var(--h0)}
+.heat .c.blank{background:transparent}
+.heat .c.l1{background:var(--h1)} .heat .c.l2{background:var(--h2)} .heat .c.l3{background:var(--h3)} .heat .c.l4{background:var(--h4)}
+.heat .c.logged{box-shadow:inset 0 0 0 1.5px var(--h2)}
+.heat .c.today{box-shadow:0 0 0 2px var(--brass)}
+.heat .c.future{opacity:.35; cursor:default}
+.legend{display:flex; align-items:center; gap:4px; justify-content:flex-end; font-size:12px; color:var(--muted); margin-top:10px}
+.legend i{display:inline-block; width:var(--cell); height:var(--cell); border-radius:3px}
+table{width:100%; border-collapse:collapse; margin-top:18px; font-variant-numeric:tabular-nums; font-size:15px}
+.table-box{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:4px 14px; margin-top:18px; overflow-x:auto}
+.table-box table{margin:0}
+th,td{text-align:right; padding:10px 6px; border-bottom:1px solid var(--line); white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+tr:last-child td{border-bottom:0}
+th{font-size:13px; color:var(--muted); font-weight:500}
+
+/* Settings */
+.set-intro{margin:22px 0 4px; color:var(--muted)}
+.row{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px}
+hr{border:0; border-top:1px solid var(--line); margin:28px 0}
+h2{font-size:18px; margin:0 0 6px}
+
+@media (prefers-reduced-motion: no-preference){
+  .area, .area-toggle{transition:background-color .15s, border-color .15s}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <h1>Life log</h1>
+    <nav aria-label="Views">
+      <button type="button" data-view="today" aria-current="page">Today</button>
+      <button type="button" data-view="progress">Progress</button>
+      <button type="button" data-view="settings">Settings</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="view-today">
+    <div class="datebar">
+      <button type="button" id="prevDay" aria-label="Previous day">‹</button>
+      <div class="datetxt"><span id="dateLabel"></span><span id="dateSub"></span></div>
+      <button type="button" id="nextDay" aria-label="Next day">›</button>
+    </div>
+    <div id="areas"></div>
+    <div class="field">
+      <span class="label" id="energyLabel">Energy</span>
+      <div id="energy" class="energy" role="group" aria-labelledby="energyLabel"></div>
+      <p class="caption">1 is drained, 5 is great.</p>
+    </div>
+    <div class="field">
+      <label class="label" for="note">One line about the day</label>
+      <input type="text" id="note" maxlength="280" autocomplete="off" placeholder="A win, a lesson, or what happened">
+    </div>
+    <button type="button" id="saveBtn" class="primary">Save day</button>
+    <p id="status" class="status" role="status"></p>
+  </section>
+
+  <section id="view-progress" hidden>
+    <div class="prog-head">
+      <select id="yearSel" aria-label="Year"></select>
+      <button type="button" id="refreshBtn" class="secondary">Refresh</button>
+    </div>
+    <div class="stats" id="stats"></div>
+    <div class="heat-box">
+      <div class="heat-scroll">
+        <div class="months" id="months"></div>
+        <div class="heat" id="heat"></div>
+      </div>
+      <div class="legend">Fewer areas <i style="background:var(--h0)"></i><i style="background:var(--h1)"></i><i style="background:var(--h2)"></i><i style="background:var(--h3)"></i><i style="background:var(--h4)"></i> More</div>
+    </div>
+    <div class="table-box"><table id="totals"></table></div>
+    <p id="progStatus" class="status" role="status"></p>
+  </section>
+
+  <section id="view-settings" hidden>
+    <p class="set-intro">Your log lives in a private GitHub repository you own. This page only reads and writes it, using a token saved on this device.</p>
+    <div class="field">
+      <label class="label" for="owner">GitHub username</label>
+      <input type="text" id="owner" autocomplete="off" autocapitalize="off" spellcheck="false">
+    </div>
+    <div class="field">
+      <label class="label" for="repo">Private data repository</label>
+      <input type="text" id="repo" autocomplete="off" autocapitalize="off" spellcheck="false">
+    </div>
+    <div class="field">
+      <label class="label" for="token">Fine-grained access token</label>
+      <input type="password" id="token" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <p class="caption" id="tokenCaption">Give it access to only this repository, with Contents set to read and write.</p>
+    </div>
+    <button type="button" id="connectBtn" class="primary">Save and test connection</button>
+    <p id="setStatus" class="status" role="status"></p>
+    <hr>
+    <h2>Your data</h2>
+    <p class="caption">Download every year in one CSV file. Keep a copy somewhere safe once a year.</p>
+    <div class="row">
+      <button type="button" id="exportBtn" class="secondary">Download all data</button>
+      <button type="button" id="forgetBtn" class="secondary">Remove token from this device</button>
+    </div>
+  </section>
+</main>
+
+<script>
+/* ---------- Configuration: edit areas here. Never reuse an old id for a new meaning. ---------- */
+const AREAS = [
+  { id: 'body',     name: 'Body',     hint: 'Gym, sport, walking, yoga' },
+  { id: 'mind',     name: 'Mind',     hint: 'Meditation, prayer, reflection' },
+  { id: 'craft',    name: 'Craft',    hint: 'Focused productive work' },
+  { id: 'learning', name: 'Learning', hint: 'Reading, courses, study' },
+  { id: 'people',   name: 'People',   hint: 'Real time with family or friends' },
+  { id: 'money',    name: 'Money',    hint: 'Saving, investing, income steps' },
+];
+const PRESETS = [15, 30, 45, 60, 90];
+const DEFAULT_OWNER = 'tejal567';
+const DEFAULT_REPO = 'life-data';
+/* -------------------------------------------------------------------------------------------- */
+
+const ORDER = [...AREAS.map(a => a.id), 'energy', 'journal'];
+const MANAGED = new Set(ORDER);
+const CFG_KEY = 'lifelog.cfg.v1';
+const $ = s => document.querySelector(s);
+const el = (tag, cls) => { const e = document.createElement(tag); if (cls) e.className = cls; return e; };
+
+let cfg = loadCfg();
+let cache = {};          // year -> { rows, sha }
+let yearList = null;
+let current = null;
+let form = blankForm();
+let loadSeq = 0;
+
+/* ---------- Dates (local time, ISO yyyy-mm-dd) ---------- */
+const pad = n => String(n).padStart(2, '0');
+function ymd(d) { return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; }
+function parseYmd(s) { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); }
+function addDays(s, n) { const d = parseYmd(s); d.setDate(d.getDate() + n); return ymd(d); }
+function todayStr() { return ymd(new Date()); }
+function defaultDate() { const n = new Date(); if (n.getHours() < 4) n.setDate(n.getDate() - 1); return ymd(n); }
+
+/* ---------- Storage of settings on this device ---------- */
+function loadCfg() { try { return JSON.parse(localStorage.getItem(CFG_KEY)) || null; } catch { return null; } }
+function storeCfg(c) { try { if (c) localStorage.setItem(CFG_KEY, JSON.stringify(c)); else localStorage.removeItem(CFG_KEY); } catch {} }
+
+/* ---------- CSV ---------- */
+function parseCSV(text) {
+  const out = []; let row = [], f = '', q = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (q) {
+      if (c === '"') { if (text[i + 1] === '"') { f += '"'; i++; } else q = false; }
+      else f += c;
+    } else if (c === '"') q = true;
+    else if (c === ',') { row.push(f); f = ''; }
+    else if (c === '\n' || c === '\r') {
+      if (c === '\r' && text[i + 1] === '\n') i++;
+      row.push(f); out.push(row); row = []; f = '';
+    } else f += c;
+  }
+  if (f !== '' || row.length) { row.push(f); out.push(row); }
+  return out;
+}
+function rowsFromCSV(text) {
+  const all = parseCSV(text.replace(/^\uFEFF/, '')).filter(r => !(r.length === 1 && r[0] === ''));
+  if (!all.length) return [];
+  const h = all[0].map(s => s.trim().toLowerCase());
+  const [di, ai, vi, ni] = ['date', 'area', 'value', 'note'].map(k => h.indexOf(k));
+  return all.slice(1)
+    .map(r => ({ date: (r[di] || '').trim(), area: (r[ai] || '').trim(), value: vi >= 0 ? (r[vi] ?? '') : '', note: ni >= 0 ? (r[ni] ?? '') : '' }))
+    .filter(r => r.date && r.area);
+}
+function esc(v) { v = String(v ?? ''); return /[",\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+function rowsToCSV(rows) {
+  return 'date,area,value,note\n' + rows.map(r => [r.date, r.area, r.value, r.note].map(esc).join(',') + '\n').join('');
+}
+function rank(a) { const i = ORDER.indexOf(a); return i < 0 ? ORDER.length : i; }
+function sortRows(rows) {
+  return rows.slice().sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : (rank(a.area) - rank(b.area)) || a.area.localeCompare(b.area));
+}
+
+/* ---------- Base64 with full Unicode support ---------- */
+function b64ToText(b) {
+  const bin = atob(b.replace(/\s/g, '')); const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+function textToB64(t) {
+  const bytes = new TextEncoder().encode(t); let bin = '';
+  for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return btoa(bin);
+}
+
+/* ---------- GitHub API ---------- */
+async function gh(path, opts = {}) {
+  if (!cfg) throw new Error('Not connected yet. Open Settings and add your repository and token.');
+  const url = `https://api.github.com/repos/${encodeURIComponent(cfg.owner)}/${encodeURIComponent(cfg.repo)}${path}`;
+  const headers = { 'Accept': 'application/vnd.github+json', 'Authorization': `Bearer ${cfg.token}`, 'X-GitHub-Api-Version': '2022-11-28' };
+  if (opts.body) headers['Content-Type'] = 'application/json';
+  try { return await fetch(url, { ...opts, headers, cache: 'no-store' }); }
+  catch { throw new Error('Could not reach GitHub. Check your internet connection and try again.'); }
+}
+async function ghError(res) {
+  let m = ''; try { m = (await res.json()).message || ''; } catch {}
+  if (res.status === 401) return new Error('GitHub rejected the token. It may have expired or been revoked. Create a new one and update Settings.');
+  if (res.status === 403) return new Error(`The token can't write to ${cfg.repo}. Give it Contents: read and write for this repository.${m ? ' (' + m + ')' : ''}`);
+  if (res.status === 404) return new Error('Repository not found. Check the username and repository name, and that the token includes this repository.');
+  return new Error(`GitHub returned an error (${res.status})${m ? ': ' + m : ''}.`);
+}
+async function loadYear(y, force = false) {
+  if (!force && cache[y]) return cache[y];
+  const res = await gh(`/contents/${y}.csv`);
+  if (res.status === 404) {
+    const r2 = await gh('');
+    if (!r2.ok) throw await ghError(r2);
+    cache[y] = { rows: [], sha: null }; return cache[y];
+  }
+  if (!res.ok) throw await ghError(res);
+  const j = await res.json();
+  let text;
+  if (j.content) text = b64ToText(j.content);
+  else {
+    const r = await gh(`/git/blobs/${j.sha}`);
+    if (!r.ok) throw await ghError(r);
+    text = b64ToText((await r.json()).content);
+  }
+  cache[y] = { rows: rowsFromCSV(text), sha: j.sha };
+  return cache[y];
+}
+async function listYears(force = false) {
+  if (yearList && !force) return yearList;
+  const res = await gh('/contents');
+  if (res.status === 404) {
+    const r2 = await gh(''); if (!r2.ok) throw await ghError(r2);
+    yearList = []; return yearList;
+  }
+  if (!res.ok) throw await ghError(res);
+  const j = await res.json();
+  yearList = (Array.isArray(j) ? j : []).map(f => f.name).filter(n => /^\d{4}\.csv$/.test(n)).map(n => n.slice(0, 4)).sort();
+  return yearList;
+}
+async function saveDay(date, dayRows) {
+  const y = date.slice(0, 4);
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const cur = await loadYear(y, true);
+    const kept = cur.rows.filter(r => r.date !== date || !MANAGED.has(r.area));
+    const rows = sortRows(kept.concat(dayRows));
+    const text = rowsToCSV(rows);
+    if (cur.sha && text === rowsToCSV(sortRows(cur.rows))) return 'unchanged';
+    const body = { message: `log ${date}`, content: textToB64(text) };
+    if (cur.sha) body.sha = cur.sha;
+    const res = await gh(`/contents/${y}.csv`, { method: 'PUT', body: JSON.stringify(body) });
+    if (res.ok) {
+      const j = await res.json();
+      cache[y] = { rows, sha: j.content.sha };
+      if (yearList && !yearList.includes(y)) { yearList.push(y); yearList.sort(); }
+      return 'saved';
+    }
+    if ((res.status === 409 || res.status === 422) && attempt === 0) continue; // changed elsewhere: reload and retry once
+    throw await ghError(res);
+  }
+}
+
+/* ---------- Today view ---------- */
+function blankForm() { return { done: {}, minutes: {}, energy: null, note: '' }; }
+function fillForm(rows) {
+  form = blankForm();
+  for (const r of rows) {
+    if (AREAS.some(a => a.id === r.area)) { form.done[r.area] = true; form.minutes[r.area] = String(r.value || '').replace(/\D/g, ''); }
+    else if (r.area === 'energy') { const n = parseInt(r.value, 10); if (n >= 1 && n <= 5) form.energy = n; }
+    else if (r.area === 'journal') form.note = r.note || '';
+  }
+  renderAreas(); renderEnergy(); $('#note').value = form.note;
+}
+function formRows(date) {
+  const rows = [];
+  for (const a of AREAS) if (form.done[a.id]) rows.push({ date, area: a.id, value: form.minutes[a.id] || '', note: '' });
+  if (form.energy) rows.push({ date, area: 'energy', value: String(form.energy), note: '' });
+  const note = $('#note').value.replace(/[\r\n]+/g, ' ').trim();
+  if (note) rows.push({ date, area: 'journal', value: '', note });
+  return rows;
+}
+const fmtPreset = p => p < 60 ? `${p}m` : `${p / 60}h`;
+function renderAreas(focusId) {
+  const box = $('#areas'); box.innerHTML = '';
+  for (const a of AREAS) {
+    const on = !!form.done[a.id];
+    const wrap = el('div', 'area' + (on ? ' on' : ''));
+    const btn = el('button', 'area-toggle'); btn.type = 'button'; btn.dataset.id = a.id;
+    btn.setAttribute('aria-pressed', String(on));
+    const nm = el('span', 'area-name'); nm.textContent = a.name;
+    const hn = el('span', 'area-hint'); hn.textContent = a.hint;
+    const tk = el('span', 'tick'); tk.setAttribute('aria-hidden', 'true');
+    btn.append(nm, hn, tk);
+    btn.onclick = () => { form.done[a.id] = !on; if (on) form.minutes[a.id] = ''; renderAreas(a.id); };
+    wrap.append(btn);
+    if (on) {
+      const mins = el('div', 'mins');
+      const inp = el('input', 'min-input');
+      const chips = PRESETS.map(p => {
+        const c = el('button', 'chip'); c.type = 'button'; c.textContent = fmtPreset(p);
+        c.setAttribute('aria-label', `${p} minutes`);
+        c.onclick = () => { form.minutes[a.id] = form.minutes[a.id] === String(p) ? '' : String(p); inp.value = form.minutes[a.id]; sync(); };
+        return c;
+      });
+      const sync = () => chips.forEach((c, i) => { const s = form.minutes[a.id] === String(PRESETS[i]); c.classList.toggle('sel', s); c.setAttribute('aria-pressed', String(s)); });
+      inp.type = 'text'; inp.inputMode = 'numeric'; inp.placeholder = 'min'; inp.setAttribute('aria-label', `${a.name} minutes`);
+      inp.value = form.minutes[a.id] || '';
+      inp.oninput = () => { inp.value = inp.value.replace(/\D/g, '').slice(0, 4); form.minutes[a.id] = inp.value; sync(); };
+      mins.append(...chips, inp);
+      sync();
+      wrap.append(mins);
+    }
+    box.append(wrap);
+  }
+  if (focusId) box.querySelector(`[data-id="${focusId}"]`)?.focus();
+}
+function renderEnergy() {
+  const box = $('#energy'); box.innerHTML = '';
+  for (let n = 1; n <= 5; n++) {
+    const b = el('button'); b.type = 'button'; b.textContent = n;
+    b.setAttribute('aria-pressed', String(form.energy === n)); b.setAttribute('aria-label', `Energy ${n} of 5`);
+    b.onclick = () => { form.energy = form.energy === n ? null : n; renderEnergy(); box.children[n - 1].focus(); };
+    box.append(b);
+  }
+}
+function renderDateBar() {
+  const d = parseYmd(current), t = todayStr();
+  $('#dateLabel').textContent = d.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' });
+  $('#dateSub').textContent = current === t ? 'Today' : current === addDays(t, -1) ? 'Yesterday' : String(d.getFullYear());
+  $('#nextDay').disabled = current >= t;
+}
+function setStatus(sel, msg, kind) { const s = $(sel); s.textContent = msg || ''; s.className = 'status' + (kind ? ' ' + kind : ''); }
+async function openDate(d) {
+  current = d; renderDateBar();
+  const seq = ++loadSeq;
+  fillForm([]);
+  if (!cfg) { setStatus('#status', 'Connect your data repository in Settings to start.', 'err'); return; }
+  $('#saveBtn').disabled = true; setStatus('#status', 'Loading…');
+  try {
+    const y = await loadYear(d.slice(0, 4));
+    if (seq !== loadSeq) return;
+    const rows = y.rows.filter(r => r.date === d);
+    fillForm(rows);
+    setStatus('#status', rows.length ? 'Already logged. Change anything and save again.' : '');
+  } catch (e) { if (seq === loadSeq) setStatus('#status', e.message, 'err'); }
+  finally { if (seq === loadSeq) $('#saveBtn').disabled = false; }
+}
+async function onSave() {
+  const btn = $('#saveBtn'); btn.disabled = true; setStatus('#status', 'Saving…');
+  try {
+    const rows = formRows(current);
+    const r = await saveDay(current, rows);
+    const n = AREAS.filter(a => form.done[a.id]).length;
+    setStatus('#status', r === 'unchanged' ? 'No changes to save.' : `Saved. ${n} of ${AREAS.length} areas.`, 'ok');
+  } catch (e) { setStatus('#status', e.message, 'err'); }
+  finally { btn.disabled = false; }
+}
+
+/* ---------- Progress view ---------- */
+async function allRows(force) {
+  const years = await listYears(force);
+  const out = [];
+  for (const y of years) out.push(...(await loadYear(y, force)).rows);
+  return out;
+}
+function summarize(rows) {
+  const logged = new Set(), done = new Map();
+  for (const r of rows) {
+    logged.add(r.date);
+    if (AREAS.some(a => a.id === r.area)) { if (!done.has(r.date)) done.set(r.date, new Set()); done.get(r.date).add(r.area); }
+  }
+  return { logged, done };
+}
+function streaks(logged) {
+  const t = todayStr();
+  let s = logged.has(t) ? t : addDays(t, -1), streak = 0;
+  while (logged.has(s)) { streak++; s = addDays(s, -1); }
+  if (!logged.size) return { streak: 0, nmt: 0 };
+  const first = [...logged].sort()[0];
+  let d = addDays(t, -1), prevMissing = false, start = first;
+  while (d >= first) {
+    const missing = !logged.has(d);
+    if (missing && prevMissing) { start = addDays(d, 2); break; }
+    prevMissing = missing; d = addDays(d, -1);
+  }
+  const nmt = Math.round((parseYmd(t) - parseYmd(start)) / 86400000) + 1;
+  return { streak, nmt: Math.max(nmt, 0) };
+}
+const levelOf = n => n === 0 ? 0 : n === 1 ? 1 : n === 2 ? 2 : n <= 4 ? 3 : 4;
+async function renderProgress(force = false) {
+  setStatus('#progStatus', 'Loading…');
+  try {
+    const rows = await allRows(force);
+    const t = todayStr(), thisYear = t.slice(0, 4);
+    const years = [...new Set([...(yearList || []), thisYear])].sort().reverse();
+    const sel = $('#yearSel');
+    const chosen = sel.value && years.includes(sel.value) ? sel.value : thisYear;
+    sel.innerHTML = years.map(y => `<option value="${y}">${y}</option>`).join('');
+    sel.value = chosen;
+
+    const { logged, done } = summarize(rows);
+    const yRows = rows.filter(r => r.date.startsWith(chosen));
+    const yLogged = [...logged].filter(d => d.startsWith(chosen)).length;
+    const yActive = [...done.keys()].filter(d => d.startsWith(chosen)).length;
+    const en = yRows.filter(r => r.area === 'energy').map(r => +r.value).filter(n => n >= 1 && n <= 5);
+    const { streak, nmt } = streaks(logged);
+
+    const stats = chosen === thisYear
+      ? [[streak, 'day logging streak'], [nmt, 'days without missing twice'], [yLogged, `days logged in ${chosen}`], [en.length ? (en.reduce((a, b) => a + b, 0) / en.length).toFixed(1) : '–', 'average energy']]
+      : [[yLogged, 'days logged'], [yActive, 'days with at least one area'], [yRows.filter(r => AREAS.some(a => a.id === r.area)).length, 'areas completed'], [en.length ? (en.reduce((a, b) => a + b, 0) / en.length).toFixed(1) : '–', 'average energy']];
+    $('#stats').innerHTML = '';
+    for (const [v, label] of stats) { const s = el('div', 'stat'); const b = el('b'); b.textContent = v; const sp = el('span'); sp.textContent = label; s.append(b, sp); $('#stats').append(s); }
+
+    // Heatmap
+    const heat = $('#heat'), months = $('#months'); heat.innerHTML = ''; months.innerHTML = '';
+    const Y = +chosen, jan1 = new Date(Y, 0, 1), offset = (jan1.getDay() + 6) % 7;
+    const step = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cell')) + parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--gap'));
+    for (let i = 0; i < offset; i++) heat.append(el('span', 'c blank'));
+    let doy = 0;
+    for (let d = new Date(jan1); d.getFullYear() === Y; d.setDate(d.getDate() + 1), doy++) {
+      const ds = ymd(d), set = done.get(ds), n = set ? set.size : 0;
+      if (d.getDate() === 1) { const m = el('span'); m.textContent = d.toLocaleDateString(undefined, { month: 'short' }); m.style.left = (Math.floor((offset + doy) / 7) * step) + 'px'; months.append(m); }
+      const c = el('button', `c l${levelOf(n)}`); c.type = 'button';
+      if (!n && logged.has(ds)) c.classList.add('logged');
+      if (ds === t) c.classList.add('today');
+      const names = set ? AREAS.filter(a => set.has(a.id)).map(a => a.name).join(', ') : (logged.has(ds) ? 'logged, no areas' : 'not logged');
+      c.title = `${d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}: ${names}`;
+      c.setAttribute('aria-label', c.title);
+      if (ds > t) { c.classList.add('future'); c.disabled = true; }
+      else c.onclick = () => { show('today'); openDate(ds); };
+      heat.append(c);
+    }
+    months.style.width = heat.style.width = '';
+
+    // Totals
+    const hrs = m => (m / 60).toFixed(m >= 600 ? 0 : 1);
+    let html = `<thead><tr><th>Area</th><th>Days ${chosen}</th><th>Hours ${chosen}</th><th>Hours lifetime</th></tr></thead><tbody>`;
+    for (const a of AREAS) {
+      const yr = yRows.filter(r => r.area === a.id), all = rows.filter(r => r.area === a.id);
+      const ym = yr.reduce((s, r) => s + (parseInt(r.value, 10) || 0), 0), am = all.reduce((s, r) => s + (parseInt(r.value, 10) || 0), 0);
+      html += `<tr><td>${a.name}</td><td>${yr.length}</td><td>${hrs(ym)}</td><td>${hrs(am)}</td></tr>`;
+    }
+    $('#totals').innerHTML = html + '</tbody>';
+    setStatus('#progStatus', rows.length ? '' : 'No entries yet. Log your first day and it will show up here.');
+    if (chosen === thisYear) { const sc = $('.heat-scroll'), tc = heat.querySelector('.today'); if (tc) sc.scrollLeft = Math.max(0, tc.offsetLeft - sc.clientWidth + 60); }
+  } catch (e) { setStatus('#progStatus', e.message, 'err'); }
+}
+
+/* ---------- Settings ---------- */
+function fillSettings() {
+  $('#owner').value = cfg?.owner || DEFAULT_OWNER;
+  $('#repo').value = cfg?.repo || DEFAULT_REPO;
+  $('#token').value = '';
+  $('#token').placeholder = cfg?.token ? 'Saved on this device. Leave empty to keep it.' : 'github_pat_…';
+}
+async function onConnect() {
+  const owner = $('#owner').value.trim(), repo = $('#repo').value.trim(), token = $('#token').value.trim() || cfg?.token || '';
+  if (!owner || !repo || !token) { setStatus('#setStatus', 'Fill in the username, repository and token.', 'err'); return; }
+  cfg = { owner, repo, token }; cache = {}; yearList = null;
+  $('#connectBtn').disabled = true; setStatus('#setStatus', 'Testing…');
+  try {
+    const res = await gh('');
+    if (!res.ok) throw await ghError(res);
+    const j = await res.json();
+    await listYears(true);
+    storeCfg(cfg); fillSettings();
+    if (j.private === false) setStatus('#setStatus', `Connected, but ${owner}/${repo} is public. Anyone can read your log. Make it private in the repository settings.`, 'err');
+    else setStatus('#setStatus', `Connected to ${owner}/${repo}. Saved on this device.`, 'ok');
+    openDate(current);
+  } catch (e) { setStatus('#setStatus', e.message, 'err'); cfg = loadCfg(); }
+  finally { $('#connectBtn').disabled = false; }
+}
+async function onExport() {
+  setStatus('#setStatus', 'Preparing…');
+  try {
+    const rows = sortRows(await allRows(true));
+    const blob = new Blob([rowsToCSV(rows)], { type: 'text/csv;charset=utf-8' });
+    const a = el('a'); a.href = URL.createObjectURL(blob); a.download = `life-log-all-${todayStr()}.csv`;
+    document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    setStatus('#setStatus', `Downloaded ${rows.length} rows.`, 'ok');
+  } catch (e) { setStatus('#setStatus', e.message, 'err'); }
+}
+function onForget() {
+  storeCfg(null); cfg = null; cache = {}; yearList = null; fillSettings();
+  setStatus('#setStatus', 'Token removed from this device. Your data on GitHub is untouched.', 'ok');
+}
+
+/* ---------- Navigation and start ---------- */
+function show(view) {
+  for (const v of ['today', 'progress', 'settings']) $('#view-' + v).hidden = v !== view;
+  document.querySelectorAll('nav button').forEach(b => {
+    if (b.dataset.view === view) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+  });
+  if (view === 'progress') renderProgress();
+  if (view === 'settings') fillSettings();
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => show(b.dataset.view));
+$('#prevDay').onclick = () => openDate(addDays(current, -1));
+$('#nextDay').onclick = () => { if (current < todayStr()) openDate(addDays(current, 1)); };
+$('#saveBtn').onclick = onSave;
+$('#note').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); onSave(); } });
+$('#yearSel').onchange = () => renderProgress();
+$('#refreshBtn').onclick = () => renderProgress(true);
+$('#connectBtn').onclick = onConnect;
+$('#exportBtn').onclick = onExport;
+$('#forgetBtn').onclick = onForget;
+
+current = defaultDate();
+renderEnergy();
+if (cfg) { show('today'); openDate(current); }
+else { show('settings'); openDate(current); setStatus('#setStatus', 'Connect your private data repository to start.'); }
+</script>
+</body>
+</html>
